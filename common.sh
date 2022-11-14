@@ -22,6 +22,18 @@ git_compare_branches() {
 	fi
 }
 
+compare_and_check() {
+	git_compare_branches "$(git_current_branch)" "origin/$(git_current_branch)"
+  local status=$?
+  if [ $status -eq 2 ]; then
+    info "ahead"
+    exit 0
+  elif [ $status -eq 1 ]; then
+    info "behind"
+    exit 0
+  fi
+}
+
 git_current_branch() {
   git branch --no-color | grep '^\* ' | grep -v 'no branch' | sed 's/^* //g'
 }
