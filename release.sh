@@ -59,7 +59,7 @@ finish() {
 
   local release_branch=$(git_current_branch)
 
-  if [[ $release_branch != ^release ]]; then
+  if [[ "$release_branch" != release* ]]; then
     info "Please checkout the release branch"
     exit 0
   fi
