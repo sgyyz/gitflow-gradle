@@ -58,3 +58,10 @@ upgrade_minor_version() {
 	a[2]=0
 	echo "${a[0]}.${a[1]}.${a[2]}"
 }
+
+upgrade_patch_version() {
+	local version=$1
+	a=( ${version//./ } )
+	((a[2]++))
+	echo "${a[0]}.${a[1]}.${a[2]}"
+}
