@@ -73,7 +73,7 @@ finish() {
 
   ## merge to the main
   git checkout main
-  git merge --no-ff --no-commit $release_branch
+  git merge --no-ff -m "Merge from $release_branch" $release_branch
 
   ## tag the main
   git tag -a $version -m "Tag for $version"
@@ -93,7 +93,7 @@ finish() {
 
   ## merge it back to develop
   git checkout develop
-  git merge --no-ff --no-commit $release_branch
+  git merge --no-ff -m "Merge $release_branch back to develop" $release_branch
   git push origin develop
 
   ## delete the release branch local/remote
