@@ -35,7 +35,7 @@ start() {
   if [ $status -eq 2 ]; then
     info "ahead"
     exit 0
-  elif [ $status -eq 1]; then
+  elif [ $status -eq 1 ]; then
     info "behind"
     exit 0
   fi
