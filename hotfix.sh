@@ -49,8 +49,8 @@ finish() {
   git push origin main
   git push origin $version
 
-  local target_branch="develop"
-  if [ -z "$2" ]; then
+  target_branch="develop"
+  if [ "$2" ]; then
     target_branch=$2
   fi
 
