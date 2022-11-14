@@ -59,45 +59,45 @@ finish() {
 
   local release_branch=$(git_current_branch)
 
-  if [[ $release_branch != "release/*" ]]; then
+  if [[ "$release_branch" =~ ^release ]]; then
+    ## update the version without snapshot
+    local snapshot_version="$(read_gradle_version)"
+    local version="$(parse_snapshot_version $snapshot_version)"
+    update_gradle_version $version
+    git add .
+    git commit -m "Update version for release"
+
+    ## merge to the main
+    git checkout main
+    git merge --no-ff $release_branch
+
+    ## tag the main
+    git tag -a $version -m "Tag for $version"
+
+    git push origin main
+    git push origin $version
+
+    ## update it same as the develop version
+    git checkout develop
+    local develop_version="$(read_gradle_version)"
+
+    ## checkout to the release branch 
+    git checkout $release_branch
+    update_gradle_version $develop_version
+    git add .
+    git commit -m "Update to current development version"
+
+    ## merge it back to develop
+    git merge --no-ff $release_branch
+    git push origin develop
+
+    ## delete the release branch local/remote
+    git branch -D $release_branch
+    git push origin -d $release_branch
+  else
     info "Please checkout the release branch"
     exit 0
   fi
-
-  ## update the version without snapshot
-  local snapshot_version="$(read_gradle_version)"
-  local version="$(parse_snapshot_version $snapshot_version)"
-  update_gradle_version $version
-  git add .
-  git commit -m "Update version for release"
-
-  ## merge to the main
-  git checkout main
-  git merge --no-ff $release_branch
-
-  ## tag the main
-  git tag -a $version -m "Tag for $version"
-
-  git push origin main
-  git push origin $version
-
-  ## update it same as the develop version
-  git checkout develop
-  local develop_version="$(read_gradle_version)"
-
-  ## checkout to the release branch 
-  git checkout $release_branch
-  update_gradle_version $develop_version
-  git add .
-  git commit -m "Update to current development version"
-
-  ## merge it back to develop
-  git merge --no-ff $release_branch
-  git push origin develop
-
-  ## delete the release branch local/remote
-  git branch -D $release_branch
-  git push origin -d $release_branch
 }
 
 $1
