@@ -49,17 +49,22 @@ finish() {
   git push origin main
   git push origin $version
 
-  git checkout develop
-  local develop_version="$(read_gradle_version)"
+  local target_branch="develop"
+  if [ -z "$2" ]; then
+    target_branch=$2
+  fi
+
+  git checkout $target_branch
+  local target_version="$(read_gradle_version)"
 
   git checkout $hotfix_branch
-  update_gradle_version $develop_version
+  update_gradle_version $target_version
   git add .
   git commit -m "Update to current development version"
 
-  git checkout develop
+  git checkout $target_branch
   git merge --no-ff -m "Merge $hotfix_branch back to develop" $hotfix_branch
-  git push origin develop
+  git push origin $target_branch
 
   git branch -D $hotfix_branch
   git push origin -d $hotfix_branch
